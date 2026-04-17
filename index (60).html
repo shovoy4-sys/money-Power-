@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Money Power - আর্নিং অ্যাপ</title>
+    
+    <!-- Telegram WebApp & AdsGram -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+    
+    <!-- Monetag Ad Zones -->
+    <script src='//libtl.com/sdk.js' data-zone='9730885' data-sdk='show_9730885'></script>
+    <script src='//libtl.com/sdk.js' data-zone='9500387' data-sdk='show_9500387'></script>
+    <script src='//libtl.com/sdk.js' data-zone='9715370' data-sdk='show_9715370'></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; min-height: 100vh; padding-bottom: 85px; color: #1e293b; }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #e2e8f0; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
+        .relative { position: relative; }
+        .hidden { display: none; }
+        .text-xs { font-size: 12px; }
+        .text-sm { font-size: 13px; }
+        .text-xl { font-size: 20px; }
+        .text-2xl { font-size: 24px; }
+        .text-3xl { font-size: 28px; }
+        .font-bold { font-weight: 700; }
+        .font-semibold { font-weight: 600; }
+        .mb-2 { margin-bottom: 8px; }
+        .mb-3 { margin-bottom: 12px; }
+        .mb-4 { margin-bottom: 16px; }
+        .mt-2 { margin-top: 8px; }
+        .mt-3 { margin-top: 12px; }
+        .mt-4 { margin-top: 16px; }
+        .mr-2 { margin-right: 8px; }
+        .cursor-pointer { cursor: pointer; }
+        .text-center { text-align: center; }
+        
+        .profile-section { background: #ffffff; border-radius: 28px; margin: 20px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+        .profile-avatar { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 3px solid #1e293b; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .verified-badge { position: absolute; bottom: 2px; right: 2px; background: #10b981; border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; border: 2px solid white; }
+        .balance-card { background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 20px; padding: 15px 20px; text-align: right; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .balance-card p { color: rgba(255,255,255,0.8); font-size: 12px; }
+        .balance-card .balance-amount { color: #ffffff; font-weight: 700; font-size: 24px; }
+        
+        .action-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 20px; }
+        .action-btn { border-radius: 20px; padding: 20px 15px; text-align: center; transition: all 0.3s; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .action-btn:active { transform: scale(0.96); }
+        .action-btn i { font-size: 40px; margin-bottom: 10px; color: white; }
+        .action-btn h3 { font-size: 16px; font-weight: 700; margin-bottom: 5px; color: #ffffff; }
+        .action-btn p { font-size: 11px; color: rgba(255,255,255,0.85); }
+        .limit-badge { background: rgba(0,0,0,0.25); padding: 4px 10px; border-radius: 20px; font-size: 10px; margin-top: 8px; color: #ffffff; display: inline-block; }
+        .btn-watch { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .btn-short { background: linear-gradient(135deg, #22c55e, #16a34a); }
+        .btn-monetag { background: linear-gradient(135deg, #a855f7, #9333ea); }
+        .btn-sponsor { background: linear-gradient(135deg, #f97316, #ea580c); }
+        
+        .spin-section { background: linear-gradient(135deg, #ef4444, #dc2626); border-radius: 28px; margin: 20px; padding: 25px; text-align: center; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 20px rgba(239,68,68,0.3); }
+        .spin-section:active { transform: scale(0.98); }
+        .spin-icon { font-size: 60px; margin-bottom: 15px; }
+        .spin-section h3 { color: #ffffff; font-weight: 700; font-size: 20px; }
+        .spin-section p { color: rgba(255,255,255,0.9); font-size: 13px; }
+        
+        .channel-btn { background: linear-gradient(135deg, #0ea5e9, #0284c7); border-radius: 20px; margin: 20px; padding: 18px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(14,165,233,0.3); }
+        .channel-btn:active { transform: scale(0.98); }
+        .channel-btn h3 { color: #ffffff; font-weight: 600; font-size: 16px; }
+        .channel-btn p { color: rgba(255,255,255,0.85); font-size: 11px; }
+        
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #ffffff; display: flex; justify-content: space-around; padding: 10px 20px; border-top: 1px solid #e2e8f0; box-shadow: 0 -4px 20px rgba(0,0,0,0.05); z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #64748b; cursor: pointer; padding: 6px 16px; border-radius: 30px; }
+        .nav-item.active { color: #1e293b; background: #f1f5f9; }
+        .nav-item i { font-size: 22px; }
+        .nav-item span { font-size: 11px; font-weight: 500; }
+        
+        .page { display: none; animation: fadeInUp 0.3s ease; }
+        .page.active { display: block; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .glass-card { background: #ffffff; border-radius: 24px; margin: 20px; padding: 20px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .section-title { font-size: 20px; font-weight: 700; color: #1e293b; margin-bottom: 20px; }
+        
+        .code-job-card { background: linear-gradient(135deg, #f8fafc, #ffffff); border-radius: 24px; padding: 25px; border: 1px solid #e2e8f0; text-align: center; }
+        .code-input-area { margin: 20px 0; display: flex; flex-direction: column; gap: 15px; }
+        .code-input { border: 2px solid #e2e8f0; border-radius: 50px; padding: 14px 20px; font-size: 16px; text-align: center; font-family: monospace; background: #ffffff; }
+        .code-input:focus { outline: none; border-color: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,0.1); }
+        .code-submit-btn { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; border: none; border-radius: 50px; padding: 14px; font-weight: bold; font-size: 16px; cursor: pointer; }
+        .code-submit-btn:active { transform: scale(0.96); }
+        .code-submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .job-link-btn { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; border: none; border-radius: 50px; padding: 14px 20px; font-weight: bold; font-size: 16px; margin-bottom: 20px; cursor: pointer; width: 100%; }
+        .cooldown-badge { background: #f97316; color: white; padding: 8px 15px; border-radius: 50px; font-size: 13px; font-weight: 600; display: inline-block; margin-bottom: 15px; }
+        
+        .watch-ads-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 15px; }
+        .watch-ad-item { background: linear-gradient(135deg, #f97316, #ea580c); border-radius: 16px; padding: 15px; text-align: center; cursor: pointer; }
+        .watch-ad-item:active { transform: scale(0.96); }
+        .watch-ad-item.disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+        .watch-ad-item i { color: #ffffff; font-size: 28px; margin-bottom: 8px; }
+        .watch-ad-item p { color: #ffffff; font-size: 12px; }
+        .cooldown-timer { font-size: 10px; color: #fef3c7; margin-top: 5px; font-weight: bold; }
+        
+        .sponsor-card { background: #ffffff; border-radius: 20px; padding: 15px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; border: 1px solid #e2e8f0; }
+        .sponsor-info { display: flex; align-items: center; gap: 12px; }
+        .sponsor-icon { width: 50px; height: 50px; background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #ffffff; }
+        .sponsor-info h4 { font-weight: 600; color: #1e293b; font-size: 14px; }
+        .sponsor-info p { font-size: 11px; color: #64748b; }
+        .sponsor-btn { background: #1e293b; border: none; padding: 10px 18px; border-radius: 30px; color: #ffffff; font-weight: 600; font-size: 12px; cursor: pointer; }
+        .sponsor-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .leaderboard-item { background: #ffffff; border-radius: 16px; padding: 12px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; border: 1px solid #e2e8f0; }
+        .leaderboard-rank { width: 40px; height: 40px; background: #1e293b; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #ffffff; }
+        .rank-1 { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #1e293b; }
+        .leaderboard-avatar { width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, #e2e8f0, #cbd5e1); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; font-family: monospace; }
+        .leaderboard-name { font-weight: 600; font-size: 14px; color: #1e293b; font-family: monospace; letter-spacing: 1px; }
+        .leaderboard-amount { font-weight: bold; color: #22c55e; font-size: 16px; }
+        
+        .withdraw-input { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 14px; width: 100%; margin-bottom: 12px; }
+        .withdraw-btn { background: #1e293b; border: none; padding: 14px; border-radius: 16px; color: white; font-weight: bold; width: 100%; cursor: pointer; }
+        
+        .toast-alert { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: #1e293b; color: white; padding: 12px 24px; border-radius: 50px; z-index: 150; animation: slideUp 0.3s ease; white-space: nowrap; }
+        .toast-alert.warning { background: #f97316; }
+        .toast-alert.error { background: #ef4444; }
+        .toast-alert.success { background: #22c55e; }
+        @keyframes slideUp { from { opacity: 0; transform: translateX(-50%) translateY(20px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+        
+        .wheel-page-container { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #ffffff; z-index: 300; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .wheel-page-container.active { display: flex; }
+        .wheel-canvas { width: 300px; height: 300px; margin: 20px auto; }
+        .close-wheel { position: absolute; top: 20px; right: 20px; background: #f1f5f9; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .spin-btn-large { background: #1e293b; border: none; padding: 15px 50px; border-radius: 50px; color: white; font-weight: bold; font-size: 18px; margin-top: 25px; cursor: pointer; }
+        .flex-between { display: flex; align-items: center; justify-content: space-between; }
+        .flex-row { display: flex; align-items: center; gap: 16px; }
+        .cooldown-text { font-size: 10px; color: #f97316; margin-top: 5px; }
+        .info-note { font-size: 12px; color: #64748b; margin-top: 15px; padding: 10px; background: #f1f5f9; border-radius: 12px; }
+        .user-code-badge { background: #1e293b; color: white; padding: 6px 12px; border-radius: 20px; font-family: monospace; font-weight: bold; font-size: 14px; letter-spacing: 1px; }
+    </style>
+</head>
+<body>
+
+    <div id="app">
+        <div id="home-page" class="page active">
+            <div class="profile-section">
+                <div class="flex-between">
+                    <div class="flex-row">
+                        <div class="relative">
+                            <img id="profile-avatar" class="profile-avatar" src="https://placehold.co/70x70/1e293b/white?text=ID" alt="Profile">
+                            <div id="verified-badge-icon" class="verified-badge hidden"><i class="fas fa-check text-white text-xs"></i></div>
+                        </div>
+                        <div>
+                            <div class="user-code-badge" id="profile-code">****</div>
+                            <p id="profile-username" class="text-sm" style="color:#64748b; margin-top: 5px;">@username</p>
+                        </div>
+                    </div>
+                    <div class="balance-card">
+                        <p class="text-xs">মোট ব্যালেন্স</p>
+                        <p class="balance-amount">৳<span id="balance">0</span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="action-grid">
+                <div class="action-btn btn-watch" onclick="openWatchAdsPage()"><i class="fas fa-play-circle"></i><h3>ওয়াচ অ্যাড</h3><p>দেখুন এবং আর্ন করুন</p><div class="limit-badge">১০টি অ্যাড</div></div>
+                <div class="action-btn btn-short" onclick="openCodeJobPage()"><i class="fas fa-code"></i><h3>শর্ট অ্যাড</h3><p>কোড সাবমিট করে আয়</p><div class="limit-badge">+১৫ টাকা</div></div>
+                <div class="action-btn btn-monetag" onclick="showMonetagAd()"><i class="fas fa-tv"></i><h3>ভিডিও অ্যাড</h3><p>+৳10 প্রতি অ্যাড</p><div class="limit-badge"><span id="monetag-count">0</span>/৩০ আজ</div></div>
+                <div class="action-btn btn-sponsor" onclick="navigateTo('sponsor-page')"><i class="fas fa-gift"></i><h3>স্পন্সর</h3><p>বোনাস পান</p><div class="limit-badge">৩টি অফার</div></div>
+            </div>
+            <div class="spin-section" onclick="openWheelPage()"><div class="spin-icon">🎡</div><h3>লাকি হুইল</h3><p>স্পিন করে জিতে নিন ১০-৫০০ টাকা!</p><div class="limit-badge mt-2">স্পিন করতে অ্যাড দেখুন</div></div>
+            <div class="channel-btn" onclick="joinTelegramChannel()"><div class="flex-row"><i class="fab fa-telegram text-xl"></i><div><h3>অফিসিয়াল চ্যানেল</h3><p>সব আপডেট পেতে জয়েন করুন</p></div></div><i class="fas fa-arrow-right"></i></div>
+        </div>
+        
+        <div id="codejob-page" class="page">
+            <div class="glass-card">
+                <div class="flex-row mb-4"><i class="fas fa-arrow-left text-xl cursor-pointer" style="color:#1e293b;" onclick="navigateTo('home-page')"></i><h3 class="section-title" style="margin-bottom:0; margin-left:12px;">📝 কোড সাবমিট জব</h3></div>
+                <div class="code-job-card">
+                    <i class="fas fa-tasks fa-3x" style="color:#22c55e; margin-bottom:15px;"></i>
+                    <div id="code-job-cooldown-status" class="cooldown-badge" style="display: none;"></div>
+                    <p style="margin-bottom:15px; color:#475569;">নির্দিষ্ট লিংকে যান এবং কাজ সম্পন্ন করুন। সঠিক কোড সাবমিট করলে ১৫ টাকা পাবেন। প্রতি ৮ ঘন্টা পর পর একটি কোড সাবমিট করতে পারবেন।</p>
+                    <button id="job-link-btn" class="job-link-btn" onclick="openJobLink()"><i class="fas fa-external-link-alt mr-2"></i> কাজের লিংকে যান</button>
+                    <div class="code-input-area">
+                        <input type="text" id="code-input-field" class="code-input" placeholder="এখানে কোড লিখুন" autocomplete="off">
+                        <button id="code-submit-btn" class="code-submit-btn" onclick="submitCodeJob()"><i class="fas fa-check-circle mr-2"></i> কোড সাবমিট করুন</button>
+                    </div>
+                    <div class="info-note"><i class="fas fa-info-circle"></i> সঠিক কোড পেতে কাজের লিংকে যান। প্রতি ৮ ঘন্টা পর পর একটি কোড সাবমিট করতে পারবেন।</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="wallet-page" class="page">
+            <div class="glass-card"><h3 class="section-title">💰 আমার ওয়ালেট</h3><div class="balance-card mb-4" style="background: linear-gradient(135deg, #1e293b, #0f172a);"><p class="text-sm">বর্তমান ব্যালেন্স</p><p class="text-3xl font-bold" style="color:#ffffff;">৳<span id="wallet-balance">0</span></p></div><input type="number" id="withdraw-amount" class="withdraw-input" placeholder="টাকার পরিমাণ লিখুন (ন্যূনতম ২০০০)"><select id="withdraw-method" class="withdraw-input"><option value="">পদ্ধতি নির্বাচন করুন</option><option value="Bkash">বিকাশ</option><option value="Nagad">নগদ</option><option value="Rocket">রকেট</option></select><div id="payment-details-container"></div><button class="withdraw-btn mt-3" id="withdraw-btn">উত্তোলন রিকোয়েস্ট</button></div>
+            <div class="glass-card"><h3 class="section-title">📋 উত্তোলন ইতিহাস</h3><div id="withdrawal-history-list"></div></div>
+        </div>
+        
+        <div id="leaderboard-page" class="page"><div class="glass-card"><h3 class="section-title">🏆 লিডারবোর্ড - টপ ১০</h3><div id="leaderboard-list"></div></div></div>
+        
+        <div id="sponsor-page" class="page"><div class="glass-card"><div class="flex-row mb-4"><i class="fas fa-arrow-left text-xl cursor-pointer" style="color:#1e293b;" onclick="navigateTo('home-page')"></i><h3 class="section-title" style="margin-bottom:0;">🎁 স্পন্সর অফার</h3></div><div id="sponsor-list"></div></div></div>
+        
+        <div id="watch-ads-page" class="page"><div class="glass-card"><div class="flex-row mb-4"><i class="fas fa-arrow-left text-xl cursor-pointer" style="color:#1e293b;" onclick="navigateTo('home-page')"></i><h3 class="section-title" style="margin-bottom:0;">📺 অ্যাড দেখুন</h3></div><p class="text-sm" style="color:#64748b; margin-bottom:20px;">নিচের যেকোনো অ্যাডে ক্লিক করুন, ১৫ সেকেন্ড অপেক্ষা করুন এবং ৳১০ আর্ন করুন!</p><div class="watch-ads-grid" id="watch-ads-grid"></div></div></div>
+    </div>
+    
+    <div id="wheel-page" class="wheel-page-container"><div class="close-wheel" onclick="closeWheelPage()"><i class="fas fa-times"></i></div><h2 class="text-xl font-bold mb-4" style="color:#1e293b;">🎡 লাকি হুইল</h2><canvas id="wheelCanvas" width="300" height="300" class="wheel-canvas"></canvas><button class="spin-btn-large" id="wheel-spin-btn" onclick="startSpin()"><i class="fas fa-sync-alt mr-2"></i> স্পিন করুন</button><p class="text-sm mt-3" style="color:#64748b;">স্পিন করতে একটি অ্যাড দেখতে হবে (১৫ সেকেন্ড)</p><p class="text-xs mt-2" style="color:#94a3b8;">স্পিন করতে ব্যালেন্স কমপক্ষে ১০০০ টাকা থাকতে হবে</p></div>
+    
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="navigateTo('home-page')" data-page="home-page"><i class="fas fa-home"></i><span>হোম</span></div>
+        <div class="nav-item" onclick="navigateTo('wallet-page')" data-page="wallet-page"><i class="fas fa-wallet"></i><span>ওয়ালেট</span></div>
+        <div class="nav-item" onclick="navigateTo('leaderboard-page')" data-page="leaderboard-page"><i class="fas fa-trophy"></i><span>লিডারবোর্ড</span></div>
+        <div class="nav-item support-nav" id="support-nav-btn" onclick="openSupportOnce()"><i class="fas fa-headset"></i><span>সাপোর্ট</span></div>
+    </div>
+    
+    <script>
+        // ==================== CONFIG ====================
+        const APP_CONFIG = {
+            app: { minWithdrawal: 3000, dailyMonetagLimit: 30, adReward: 10, sponsorBonus: 20, watchAdCooldownHours: 10, codeJobCooldownHours: 8, channelJoinBonus: 20, spinMinBalance: 1000 },
+            monetag: { enabled: true, zones: ['9730885', '9500387', '9715370'] },
+            adsgram: { blockId: "int-25736" },
+            social: { telegramChannel: "https://t.me/+fXJwdu2jQ4A0ZTM9", supportBot: "https://t.me/arning_hubbot", jobLink: "https://code-collection-nu.vercel.app" },
+            validCodes: ["MP2025", "GOLD100", "BONUSBD", "WINNER15", "MONEYBD", "LUCKY777", "CODE200", "EARNBD", "FASTCASH", "MEGABONUS"],
+            watchAdLinks: ["https://omg10.com/4/9717825", "https://omg10.com/4/9429975", "https://omg10.com/4/9446627", "https://t.me/jhalmorichxyzbot?startapp", "http://t.me/movieflex00bot?startapp", "https://t.me/o0Uq6h5R0p80ZGE1bot?startapp", "https://omg10.com/4/10338067", "https://encouragementglutton.com/uaw9tkid6b?key=c49281ab14f9eb6a872d63173ea7bf9c", "https://t.me/f785OSC7KPk4MGJl4abot?startapp", "https://t.me/khelahobe07_bot?startapp"],
+            sponsors: [
+                { name: "ভিডিও ডাউনলোডার", icon: "fas fa-download", link: "https://t.me/o0Uq6h5R0p80ZGE1bot?startapp", reward: 20 },
+                { name: "মুভি স্ট্রিমিং", icon: "fas fa-film", link: "http://t.me/movieflex00bot?startapp", reward: 20 },
+                { name: "অ্যাড অফার", icon: "fas fa-ad", link: "https://t.me/jhalmorichxyzbot?startapp", reward: 20 }
+            ],
+            wheelSegments: [https://t.me/jhalmorichxyzbot?startapp
+                { value: 10, color: "#FF6B6B", label: "৳10" }, { value: 20, color: "#4ECDC4", label: "৳20" },
+                { value: 50, color: "#45B7D1", label: "৳50" }, { value: 100, color: "#96CEB4", label: "৳100" },
+                { value: 200, color: "#FFEAA7", label: "৳200" }, { value: 500, color: "#DDA0DD", label: "৳500" },
+                { value: 30, color: "#98D8C8", label: "৳30" }, { value: 15, color: "#F7B05E", label: "৳15" }
+            ]
+        };
+        
+        // Generate 50 fake 4-digit codes for leaderboard
+        const FAKE_CODES = Array.from({ length: 50 }, (_, i) => {
+            let num = 1000 + (i * 73) % 9000;
+            return num.toString();
+        });
+        
+        // ==================== GLOBALS ====================
+        let currentUser = null, userData = null, monetagCount = 0, currentZoneIndex = 0;
+        let isSpinning = false, currentAngle = 0, pendingSpin = false;
+        let wheelCanvas, ctx;
+        let supportClicked = false;
+        let watchAdPending = {};
+        const tg = window.Telegram.WebApp;
+        
+        function showToast(msg, type = "info") { let toast = document.createElement("div"); toast.className = `toast-alert ${type}`; toast.textContent = msg; document.body.appendChild(toast); setTimeout(() => toast.remove(), 3000); }
+        function playVibration() { if (navigator.vibrate) navigator.vibrate(200); }
+        
+        // Generate unique 4-digit code for user based on ID
+        function generateUserCode(userId) {
+            let hash = 0;
+            for (let i = 0; i < userId.length; i++) hash = ((hash << 5) - hash) + userId.charCodeAt(i) | 0;
+            let code = Math.abs(hash) % 9000 + 1000;
+            return code.toString();
+        }
+        
+        // Daily dynamic balance for leaderboard (10,000 to 30,000 range)
+        function getDailyLeaderboardBalance(userId, realEarnings = 0) {
+            const today = new Date().toISOString().split('T')[0];
+            let hash = 0;
+            const seedStr = userId + today;
+            for (let i = 0; i < seedStr.length; i++) hash = ((hash << 5) - hash) + seedStr.charCodeAt(i) | 0;
+            const normalized = Math.abs(hash) % 20001;
+            let baseDynamic = 10000 + normalized;
+            // Add small influence from real earnings but keep within 10k-30k
+            let influence = Math.min(5000, Math.floor(realEarnings / 8));
+            let finalBalance = Math.min(30000, Math.max(10000, baseDynamic + influence));
+            return Math.floor(finalBalance);
+        }
+        
+        // Load leaderboard with 4-digit codes instead of names
+        function loadLeaderboard() {
+            let realUsers = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                let key = localStorage.key(i);
+                if (key && key.startsWith("user_")) {
+                    try {
+                        let u = JSON.parse(localStorage.getItem(key));
+                        if (u && u.balance !== undefined && u.userCode) {
+                            realUsers.push({ 
+                                id: key.replace("user_", ""),
+                                userCode: u.userCode,
+                                realBalance: u.balance || 0
+                            });
+                        }
+                    } catch(e) {}
+                }
+            }
+            
+            // Build leaderboard entries with daily dynamic balance
+            let leaderboardEntries = realUsers.map(user => {
+                let dailyBalance = getDailyLeaderboardBalance(user.id, user.realBalance);
+                return { code: user.userCode, balance: dailyBalance, isReal: true };
+            });
+            
+            // Generate fake users with 4-digit codes and dynamic balances
+            let fakeEntries = [];
+            for (let i = 0; i < 30; i++) {
+                let fakeCode = FAKE_CODES[i % FAKE_CODES.length];
+                let todaySeed = new Date().toISOString().split('T')[0];
+                let hashVal = 0;
+                let seedStr = todaySeed + i + "fake_leader";
+                for (let c of seedStr) hashVal = ((hashVal << 5) - hashVal) + c.charCodeAt(0) | 0;
+                let fakeBal = 10000 + (Math.abs(hashVal) % 20001);
+                fakeEntries.push({ code: fakeCode, balance: fakeBal, isReal: false });
+            }
+            
+            let all = [...leaderboardEntries, ...fakeEntries];
+            all.sort((a, b) => b.balance - a.balance);
+            let top10 = all.slice(0, 10);
+            
+            let container = document.getElementById("leaderboard-list");
+            if (container) {
+                container.innerHTML = top10.map((u, idx) => `
+                    <div class="leaderboard-item">
+                        <div class="leaderboard-rank ${idx === 0 ? 'rank-1' : ''}">${idx + 1}</div>
+                        <div class="leaderboard-avatar">#${u.code.slice(0,2)}</div>
+                        <div class="leaderboard-info">
+                            <div class="leaderboard-name">${u.code}</div>
+                        </div>
+                        <div class="leaderboard-amount">৳${u.balance.toLocaleString()}</div>
+                    </div>
+                `).join("");
+            }
+        }
+        
+        // ==================== USER DATA MANAGEMENT ====================
+        function initTelegramApp() {
+            tg.ready(); tg.expand();
+            const user = tg.initDataUnsafe.user;
+            if (user) {
+                currentUser = { id: user.id.toString(), firstName: user.first_name || '', lastName: user.last_name || '', username: user.username || '', photoUrl: user.photo_url || '' };
+                loadUserData();
+            } else {
+                currentUser = { id: "demo_" + Date.now(), firstName: "User", username: "user" };
+                loadUserData();
+            }
+        }
+        
+        function loadUserData() {
+            const stored = localStorage.getItem(`user_${currentUser.id}`);
+            const today = new Date().toISOString().split('T')[0];
+            if (stored) {
+                userData = JSON.parse(stored);
+                if (userData.lastDate !== today) { userData.monetagCount = 0; userData.lastDate = today; }
+                if (!userData.usedCodes) userData.usedCodes = [];
+                if (!userData.lastCodeSubmitTime) userData.lastCodeSubmitTime = 0;
+                if (!userData.watchAdCooldowns) userData.watchAdCooldowns = {};
+                if (!userData.sponsorCompletions) userData.sponsorCompletions = {};
+                if (!userData.userCode) userData.userCode = generateUserCode(currentUser.id);
+            } else {
+                userData = {
+                    uid: currentUser.id, 
+                    userCode: generateUserCode(currentUser.id),
+                    username: currentUser.username || "user",
+                    balance: 0, monetagCount: 0, isVerified: false, sponsorCompletions: {},
+                    watchAdCooldowns: {}, usedCodes: [], lastCodeSubmitTime: 0, lastDate: today
+                };
+            }
+            monetagCount = userData.monetagCount || 0;
+            updateUI();
+            updateAdCounts();
+            loadSponsors();
+            loadWatchAds();
+            loadLeaderboard();
+            loadWithdrawalHistory();
+            updateCodeJobCooldownUI();
+            setInterval(() => { updateWatchAdTimers(); updateCodeJobCooldownUI(); }, 1000);
+            setInterval(() => loadLeaderboard(), 3600000);
+        }
+        
+        function saveUserToStorage() {
+            userData.monetagCount = monetagCount;
+            localStorage.setItem(`user_${currentUser.id}`, JSON.stringify(userData));
+        }
+        
+        function updateUI() {
+            document.getElementById("balance").textContent = userData.balance;
+            document.getElementById("wallet-balance").textContent = userData.balance;
+            document.getElementById("profile-code").textContent = userData.userCode;
+            document.getElementById("profile-username").textContent = "@" + (userData.username || "user");
+            if (currentUser.photoUrl) document.getElementById("profile-avatar").src = currentUser.photoUrl;
+            if (userData.isVerified) document.getElementById("verified-badge-icon").classList.remove("hidden");
+        }
+        
+        function updateAdCounts() { document.getElementById("monetag-count").textContent = monetagCount; }
+        
+        // ==================== CODE JOB ====================
+        function updateCodeJobCooldownUI() {
+            const lastSubmit = userData.lastCodeSubmitTime || 0;
+            const now = Date.now();
+            const cooldownMs = APP_CONFIG.app.codeJobCooldownHours * 60 * 60 * 1000;
+            const remaining = Math.max(0, cooldownMs - (now - lastSubmit));
+            const statusDiv = document.getElementById("code-job-cooldown-status");
+            const submitBtn = document.getElementById("code-submit-btn");
+            const inputField = document.getElementById("code-input-field");
+            if (remaining > 0) {
+                const hours = Math.floor(remaining / 3600000);
+                const minutes = Math.floor((remaining % 3600000) / 60000);
+                statusDiv.style.display = "inline-block";
+                statusDiv.innerHTML = `⏰ পরবর্তী কোড সাবমিট করতে ${hours} ঘন্টা ${minutes} মিনিট অপেক্ষা করুন`;
+                if (submitBtn) submitBtn.disabled = true;
+                if (inputField) inputField.disabled = true;
+            } else {
+                statusDiv.style.display = "none";
+                if (submitBtn) submitBtn.disabled = false;
+                if (inputField) inputField.disabled = false;
+            }
+        }
+        
+        window.openCodeJobPage = function() { navigateTo("codejob-page"); updateCodeJobCooldownUI(); };
+        window.openJobLink = function() { tg.openLink(APP_CONFIG.social.jobLink); showToast("কাজের লিংকে যান এবং কোড সংগ্রহ করুন", "info"); };
+        
+        window.submitCodeJob = function() {
+            const lastSubmit = userData.lastCodeSubmitTime || 0;
+            const cooldownMs = APP_CONFIG.app.codeJobCooldownHours * 60 * 60 * 1000;
+            if (Date.now() - lastSubmit < cooldownMs) { showToast(`প্রতি ${APP_CONFIG.app.codeJobCooldownHours} ঘন্টায় একটি কোড সাবমিট করতে পারবেন`, "warning"); return; }
+            const inputCode = document.getElementById("code-input-field").value.trim().toUpperCase();
+            if (!inputCode) { showToast("কোড লিখুন!", "warning"); return; }
+            if (userData.usedCodes.includes(inputCode)) { showToast("এই কোড আপনি ইতিমধ্যে ব্যবহার করেছেন!", "error"); return; }
+            if (APP_CONFIG.validCodes.includes(inputCode)) {
+                userData.usedCodes.push(inputCode);
+                userData.lastCodeSubmitTime = Date.now();
+                userData.balance += 15;
+                saveUserToStorage(); updateUI(); document.getElementById("code-input-field").value = "";
+                playVibration(); canvasConfetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                showToast("✅ সঠিক কোড! ১৫ টাকা যোগ হয়েছে!", "success");
+                updateCodeJobCooldownUI();
+                loadLeaderboard();
+            } else { showToast("❌ ভুল কোড! সঠিক কোড দিন.", "error"); }
+        };
+        
+        // ==================== WATCH ADS ====================
+        function loadWatchAds() {
+            const container = document.getElementById("watch-ads-grid");
+            if (!container) return;
+            container.innerHTML = "";
+            for (let i = 0; i < APP_CONFIG.watchAdLinks.length; i++) {
+                let cooldownEnd = (userData.watchAdCooldowns && userData.watchAdCooldowns[`ad_${i}`]) || 0;
+                let now = Date.now();
+                let isOnCooldown = cooldownEnd > now;
+                let remaining = isOnCooldown ? Math.ceil((cooldownEnd - now) / 1000) : 0;
+                let hrs = Math.floor(remaining / 3600), mins = Math.floor((remaining % 3600) / 60), secs = remaining % 60;
+                let cdText = isOnCooldown ? (hrs > 0 ? `${hrs}ঘ ${mins}মি` : mins > 0 ? `${mins}মি ${secs}সে` : `${secs}সে`) : "";
+                container.innerHTML += `<div class="watch-ad-item ${isOnCooldown ? 'disabled' : ''}" onclick="${isOnCooldown ? '' : `watchAdWithCooldown(${i})`}"><i class="fas fa-play-circle"></i><p class="font-bold">অ্যাড ${i + 1}</p><p class="text-xs">+৳${APP_CONFIG.app.adReward}</p>${isOnCooldown ? `<div class="cooldown-timer">⏰ ${cdText} পর</div>` : ''}</div>`;
+            }
+        }
+        
+        function updateWatchAdTimers() { loadWatchAds(); }
+        
+        window.watchAdWithCooldown = function(index) {
+            let cooldownEnd = (userData.watchAdCooldowns && userData.watchAdCooldowns[`ad_${index}`]) || 0;
+            if (cooldownEnd > Date.now()) { showToast("অ্যাডটি কুলডাউনে আছে!", "warning"); return; }
+            tg.openLink(APP_CONFIG.watchAdLinks[index]);
+            showToast("অ্যাড দেখার জন্য ১৫ সেকেন্ড অপেক্ষা করুন...", "info");
+            if (watchAdPending[index]) clearTimeout(watchAdPending[index]);
+            watchAdPending[index] = setTimeout(() => {
+                userData.balance += APP_CONFIG.app.adReward;
+                userData.watchAdCooldowns[`ad_${index}`] = Date.now() + (APP_CONFIG.app.watchAdCooldownHours * 60 * 60 * 1000);
+                saveUserToStorage(); updateUI(); loadWatchAds(); playVibration();
+                showToast(`🎉 অ্যাড ${index + 1} দেখার জন্য ${APP_CONFIG.app.adReward} টাকা পেলেন!`, "success");
+                loadLeaderboard();
+                delete watchAdPending[index];
+            }, 15000);
+        };
+        
+        // ==================== MONETAG ====================
+        async function showMonetagAd() {
+            if (monetagCount >= APP_CONFIG.app.dailyMonetagLimit) { showToast("আজকের ভিডিও অ্যাড সীমা শেষ!", "warning"); return; }
+            showToast("ভিডিও অ্যাড লোড হচ্ছে...", "info");
+            const zone = APP_CONFIG.monetag.zones[currentZoneIndex % APP_CONFIG.monetag.zones.length];
+            const adFunc = `show_${zone}`;
+            if (typeof window[adFunc] === 'function') {
+                try { await window[adFunc](); monetagCount++; currentZoneIndex++; userData.balance += APP_CONFIG.app.adReward; saveUserToStorage(); updateUI(); updateAdCounts(); playVibration(); showToast(`🎉 ${APP_CONFIG.app.adReward} টাকা উপার্জন!`, "success"); loadLeaderboard(); } catch (e) { showToast("অ্যাড ত্রুটি", "error"); }
+            } else { showToast("অ্যাড সিস্টেম প্রস্তুত হচ্ছে", "warning"); }
+        }
+        
+        // ==================== SPONSORS ====================
+        function loadSponsors() {
+            let container = document.getElementById("sponsor-list");
+            if (!container) return;
+            container.innerHTML = "";
+            APP_CONFIG.sponsors.forEach((sp, i) => {
+                let completed = userData.sponsorCompletions?.[`sponsor_${i}`] || 0;
+                let cooldown = completed ? Math.max(0, 24 * 60 * 60 * 1000 - (Date.now() - completed)) : 0;
+                let hrs = Math.floor(cooldown / 3600000), mins = Math.floor((cooldown % 3600000) / 60000);
+                container.innerHTML += `<div class="sponsor-card"><div class="sponsor-info"><div class="sponsor-icon"><i class="${sp.icon}"></i></div><div><h4>${sp.name}</h4><p>+${sp.reward} টাকা</p>${cooldown > 0 ? `<p class="cooldown-text">⏰ ${hrs}ঘ ${mins}মি পরে</p>` : ''}</div></div><button class="sponsor-btn" onclick="claimSponsor(${i})" ${cooldown > 0 ? 'disabled' : ''}>${cooldown > 0 ? `${hrs}ঘ পরে` : 'জয়েন করুন'}</button></div>`;
+            });
+        }
+        
+        window.claimSponsor = function(idx) {
+            let sp = APP_CONFIG.sponsors[idx];
+            tg.openLink(sp.link);
+            showToast("স্পন্সরে ৫ সেকেন্ড পর বোনাস পাবেন", "info");
+            setTimeout(() => {
+                userData.sponsorCompletions[`sponsor_${idx}`] = Date.now();
+                userData.balance += sp.reward;
+                saveUserToStorage(); updateUI(); loadSponsors(); playVibration();
+                showToast(`🎉 ${sp.name} জয়েনে ${sp.reward} টাকা পেলেন!`, "success");
+                loadLeaderboard();
+            }, 5000);
+        };
+        
+        // ==================== WITHDRAWAL ====================
+        function loadWithdrawalHistory() {
+            let history = JSON.parse(localStorage.getItem(`withdrawals_${currentUser?.id}`) || "[]");
+            let container = document.getElementById("withdrawal-history-list");
+            if (container) container.innerHTML = history.length === 0 ? '<p class="text-center" style="color:#64748b;">কোন ইতিহাস নেই</p>' : history.map(w => `<div style="display:flex; justify-content:space-between; padding:12px; background:#f8fafc; border-radius:12px; margin-bottom:8px;"><div><span style="font-weight:600;">${w.amount} টাকা</span><span style="font-size:11px; display:block;">${w.method}</span></div><span style="color:${w.status === 'pending' ? '#f97316' : '#22c55e'};">${w.status === 'pending' ? 'প্রসেসিং' : 'অনুমোদিত'}</span></div>`).join("");
+        }
+        
+        function handleWithdrawal() {
+            let amount = parseInt(document.getElementById("withdraw-amount").value);
+            let method = document.getElementById("withdraw-method").value;
+            let paymentDetail = document.getElementById("payment-detail-input")?.value;
+            if (!amount || amount < APP_CONFIG.app.minWithdrawal) { showToast(`ন্যূনতম উত্তোলন ${APP_CONFIG.app.minWithdrawal} টাকা`, "warning"); return; }
+            if (amount > userData.balance) { showToast("ব্যালেন্স অপর্যাপ্ত", "error"); return; }
+            if (!method || !paymentDetail) { showToast("সব তথ্য পূরণ করুন", "warning"); return; }
+            let withdrawals = JSON.parse(localStorage.getItem(`withdrawals_${currentUser.id}`) || "[]");
+            withdrawals.push({ amount, method, paymentDetail, status: "pending", requestedAt: new Date().toISOString() });
+            localStorage.setItem(`withdrawals_${currentUser.id}`, JSON.stringify(withdrawals));
+            userData.balance -= amount;
+            saveUserToStorage(); updateUI(); loadWithdrawalHistory();
+            showToast("উত্তোলন রিকোয়েস্ট জমা হয়েছে। ২৪-৪৮ ঘন্টার মধ্যে প্রসেস হবে।", "success");
+            loadLeaderboard();
+        }
+        
+        function updateDynamicPaymentFields() {
+            let method = document.getElementById("withdraw-method").value;
+            let placeholder = method === "Bkash" ? "বিকাশ নম্বর" : method === "Nagad" ? "নগদ নম্বর" : method === "Rocket" ? "রকেট নম্বর" : "বিবরণ লিখুন";
+            document.getElementById("payment-details-container").innerHTML = `<input id="payment-detail-input" type="text" placeholder="${placeholder}" class="withdraw-input mt-2">`;
+        }
+        
+        window.openSupportOnce = function() {
+            if (supportClicked) { showToast("আপনি ইতিমধ্যে সাপোর্টে ক্লিক করেছেন!", "warning"); return; }
+            supportClicked = true;
+            tg.openLink(APP_CONFIG.social.supportBot);
+            showToast("সাপোর্টে সংযুক্ত করা হচ্ছে...", "info");
+        };
+        
+        // ==================== WHEEL ====================
+        function initWheel() { wheelCanvas = document.getElementById("wheelCanvas"); if (wheelCanvas) { ctx = wheelCanvas.getContext("2d"); drawWheel(); } }
+        function drawWheel() {
+            if (!ctx) return;
+            let size = 300, center = 150, radius = 150, angleStep = (Math.PI * 2) / APP_CONFIG.wheelSegments.length;
+            ctx.clearRect(0, 0, size, size);
+            for (let i = 0; i < APP_CONFIG.wheelSegments.length; i++) {
+                let start = currentAngle + i * angleStep, end = start + angleStep;
+                ctx.beginPath(); ctx.moveTo(center, center); ctx.arc(center, center, radius, start, end);
+                ctx.fillStyle = APP_CONFIG.wheelSegments[i].color; ctx.fill(); ctx.strokeStyle = "white"; ctx.stroke();
+                ctx.save(); ctx.translate(center, center); ctx.rotate(start + angleStep / 2);
+                ctx.fillStyle = "#1e293b"; ctx.font = "bold 14px Inter"; ctx.fillText(APP_CONFIG.wheelSegments[i].label, radius - 40, 10);
+                ctx.restore();
+            }
+            ctx.beginPath(); ctx.arc(center, center, 25, 0, Math.PI * 2); ctx.fillStyle = "white"; ctx.fill();
+            ctx.fillStyle = "#1e293b"; ctx.font = "bold 28px Arial"; ctx.fillText("🎡", center - 12, center + 10);
+        }
+        window.openWheelPage = function() { if (userData.balance < APP_CONFIG.app.spinMinBalance) { showToast(`স্পিন করতে ${APP_CONFIG.app.spinMinBalance} টাকা লাগবে`, "error"); return; } document.getElementById("wheel-page").classList.add("active"); };
+        window.closeWheelPage = function() { document.getElementById("wheel-page").classList.remove("active"); };
+        window.startSpin = async function() {
+            if (isSpinning) return;
+            pendingSpin = true;
+            try { if (typeof Adsgram !== 'undefined') { let ad = Adsgram.init({ blockId: APP_CONFIG.adsgram.blockId }); if (ad) await ad.show(); executeSpin(); return; } } catch(e) {}
+            let zone = APP_CONFIG.monetag.zones[currentZoneIndex % APP_CONFIG.monetag.zones.length];
+            let adFunc = `show_${zone}`;
+            if (typeof window[adFunc] === 'function') { await window[adFunc](); currentZoneIndex++; executeSpin(); return; }
+            showToast("অ্যাড সমস্যা", "error"); pendingSpin = false;
+        };
+        function executeSpin() {
+            if (!pendingSpin) return;
+            pendingSpin = false; isSpinning = true;
+            let btn = document.getElementById("wheel-spin-btn"); btn.disabled = true;
+            let spinAngle = 360 * 5 + Math.random() * 360, targetAngle = spinAngle * Math.PI / 180, startAngle = currentAngle, duration = 2000, startTime = Date.now();
+            function animate() {
+                let elapsed = Date.now() - startTime, progress = Math.min(1, elapsed / duration), ease = 1 - Math.pow(1 - progress, 3);
+                currentAngle = startAngle + targetAngle * ease; drawWheel();
+                if (progress < 1) requestAnimationFrame(animate);
+                else {
+                    let final = currentAngle % (Math.PI * 2), idx = Math.floor(final / ((Math.PI * 2) / APP_CONFIG.wheelSegments.length)), reward = APP_CONFIG.wheelSegments[idx].value;
+                    userData.balance += reward; saveUserToStorage(); updateUI(); canvasConfetti({ particleCount: 200, spread: 100 }); playVibration();
+                    showToast(`🎉 জিতেছেন ${reward} টাকা!`, "success"); isSpinning = false; btn.disabled = false;
+                    loadLeaderboard();
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+        
+        // ==================== NAVIGATION ====================
+        function navigateTo(pageId) {
+            document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+            document.getElementById(pageId).classList.add("active");
+            document.querySelectorAll(".nav-item").forEach(item => { item.classList.remove("active"); if (item.getAttribute("data-page") === pageId) item.classList.add("active"); });
+            if (pageId === "leaderboard-page") loadLeaderboard();
+            if (pageId === "wallet-page") loadWithdrawalHistory();
+            if (pageId === "sponsor-page") loadSponsors();
+            if (pageId === "watch-ads-page") loadWatchAds();
+            if (pageId === "codejob-page") updateCodeJobCooldownUI();
+        }
+        
+        window.navigateTo = navigateTo;
+        window.openWatchAdsPage = () => navigateTo("watch-ads-page");
+        window.joinTelegramChannel = function() {
+            tg.openLink(APP_CONFIG.social.telegramChannel);
+            setTimeout(() => { userData.balance += APP_CONFIG.app.channelJoinBonus; saveUserToStorage(); updateUI(); showToast(`চ্যানেল জয়েন বোনাস ${APP_CONFIG.app.channelJoinBonus} টাকা!`, "success"); loadLeaderboard(); }, 5000);
+        };
+        
+        window.onload = () => {
+            initWheel();
+            initTelegramApp();
+            document.getElementById("withdraw-btn")?.addEventListener("click", handleWithdrawal);
+            document.getElementById("withdraw-method")?.addEventListener("change", updateDynamicPaymentFields);
+            setInterval(() => { if (currentUser) loadLeaderboard(); }, 30000);
+        };
+        window.showMonetagAd = showMonetagAd;
+    </script>
+</body>
+</html>
